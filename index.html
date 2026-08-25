@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Starting your travel diary&hellip;</title>
+<style>
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f6f7fb;
+    color: #1f2937;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    text-align: center;
+    padding: 24px;
+  }
+  .card {
+    background: #fff;
+    border: 1px solid #d1d5db;
+    border-radius: 14px;
+    padding: 28px 32px;
+    max-width: 380px;
+  }
+  .spinner {
+    width: 28px; height: 28px;
+    border: 3px solid #d1fae5;
+    border-top-color: #065f46;
+    border-radius: 50%;
+    margin: 0 auto 16px;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  p { margin: 0; font-size: 15px; line-height: 1.5; }
+  noscript p { color: #b91c1c; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="spinner"></div>
+    <p>Taking you to the travel diary survey&hellip;</p>
+    <noscript><p>Please enable JavaScript, or contact the research team for a direct link.</p></noscript>
+  </div>
+
+<script>
+  // ---------------------------------------------------------------------
+  // CONFIGURE THIS BEFORE DEPLOYING:
+  // Replace with your real SurveyMonkey Web Link Collector URL for
+  // Survey 1 (Enrollment). This is the ONLY thing that needs editing.
+  // ---------------------------------------------------------------------
+  var SURVEY_1_URL = "https://www.surveymonkey.com/r/REPLACE_WITH_YOUR_COLLECTOR_ID";
+
+  // Generates a code that can't collide with the paper stream's "P###"
+  // codes (sequential, research-team-assigned) by using a different
+  // prefix -- "W" for Web. Format: W + 6 random uppercase letters/digits,
+  // e.g. "W4F9K2". No data is stored or sent anywhere by this page; the
+  // code exists only in this one redirect and is handed to SurveyMonkey
+  // as a URL parameter.
+  function generateCode() {
+    var chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // no 0/O/1/I to avoid confusion when handwritten/read aloud
+    var bytes = new Uint8Array(6);
+    (window.crypto || window.msCrypto).getRandomValues(bytes);
+    var code = "W";
+    for (var i = 0; i < 6; i++) {
+      code += chars[bytes[i] % chars.length];
+    }
+    return code;
+  }
+
+  var code = generateCode();
+  var separator = SURVEY_1_URL.indexOf("?") === -1 ? "?" : "&";
+  var target = SURVEY_1_URL + separator + "code=" + encodeURIComponent(code);
+
+  // Small delay so the redirect doesn't look like a broken/blank flash;
+  // also gives a moment for anyone with a slow connection.
+  setTimeout(function () {
+    window.location.replace(target);
+  }, 400);
+</script>
+</body>
+</html>
