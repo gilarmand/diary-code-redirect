@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Starting your travel diary&hellip;</title>
+<title>Your travel diary code</title>
 <style>
   body {
     font-family: Arial, Helvetica, sans-serif;
@@ -21,26 +21,61 @@
     background: #fff;
     border: 1px solid #d1d5db;
     border-radius: 14px;
-    padding: 28px 32px;
-    max-width: 380px;
+    padding: 32px;
+    max-width: 420px;
   }
-  .spinner {
-    width: 28px; height: 28px;
-    border: 3px solid #d1fae5;
-    border-top-color: #065f46;
-    border-radius: 50%;
-    margin: 0 auto 16px;
-    animation: spin 0.8s linear infinite;
+  h1 {
+    font-size: 18px;
+    margin: 0 0 18px;
+    color: #1f2937;
   }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  p { margin: 0; font-size: 15px; line-height: 1.5; }
+  .code {
+    font-size: 40px;
+    font-weight: bold;
+    letter-spacing: 3px;
+    color: #065f46;
+    background: #ecfdf5;
+    border: 2px solid #a7f3d0;
+    border-radius: 10px;
+    padding: 14px 10px;
+    margin: 0 0 16px;
+  }
+  p {
+    margin: 0 0 18px;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  button {
+    font-family: inherit;
+    font-size: 16px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    background: #fff;
+    cursor: pointer;
+  }
+  #copyBtn { margin-bottom: 20px; }
+  #copyBtn.copied { background: #ecfdf5; border-color: #a7f3d0; color: #065f46; }
+  #continueBtn {
+    display: block;
+    width: 100%;
+    background: #065f46;
+    color: #fff;
+    border: none;
+    font-size: 18px;
+    padding: 14px;
+    font-weight: bold;
+  }
   noscript p { color: #b91c1c; }
 </style>
 </head>
 <body>
   <div class="card">
-    <div class="spinner"></div>
-    <p>Taking you to the travel diary survey&hellip;</p>
+    <h1>Thank you for enrolling! Here is your diary code:</h1>
+    <div class="code" id="codeDisplay">&hellip;</div>
+    <button id="copyBtn" type="button">Copy code</button>
+    <p>Please write this down or take a screenshot &mdash; you will enter it at the start of each daily entry over the next 7 days. It is not linked to your name.</p>
+    <button id="continueBtn" type="button">I've saved my code &mdash; Continue to the survey</button>
     <noscript><p>Please enable JavaScript, or contact the research team for a direct link.</p></noscript>
   </div>
 
@@ -50,14 +85,19 @@
   // Replace with your real SurveyMonkey Web Link Collector URL for
   // Survey 1 (Enrollment). This is the ONLY thing that needs editing.
   // ---------------------------------------------------------------------
-  var SURVEY_1_URL = "https://www.surveymonkey.com/r/ZF9YB7C";
+  var SURVEY_1_URL = "https://www.surveymonkey.com/r/ZF9V26Z";
 
   // Generates a code that can't collide with the paper stream's "P###"
   // codes (sequential, research-team-assigned) by using a different
   // prefix -- "W" for Web. Format: W + 6 random uppercase letters/digits,
   // e.g. "W4F9K2". No data is stored or sent anywhere by this page; the
-  // code exists only in this one redirect and is handed to SurveyMonkey
-  // as a URL parameter.
+  // code exists only in this one page load and is handed to SurveyMonkey
+  // as a URL parameter when the participant clicks Continue.
+  //
+  // This page is the ONLY place the code is generated. SurveyMonkey's
+  // Custom Variable does not generate a second code -- it just captures
+  // whatever value arrives in the URL below, so there's nothing to keep
+  // in sync between the two.
   function generateCode() {
     var chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // no 0/O/1/I to avoid confusion when handwritten/read aloud
     var bytes = new Uint8Array(6);
@@ -70,14 +110,28 @@
   }
 
   var code = generateCode();
+  document.getElementById("codeDisplay").textContent = code;
+
   var separator = SURVEY_1_URL.indexOf("?") === -1 ? "?" : "&";
   var target = SURVEY_1_URL + separator + "code=" + encodeURIComponent(code);
 
-  // Small delay so the redirect doesn't look like a broken/blank flash;
-  // also gives a moment for anyone with a slow connection.
-  setTimeout(function () {
-    window.location.replace(target);
-  }, 400);
+  document.getElementById("copyBtn").addEventListener("click", function () {
+    var btn = this;
+    var done = function () {
+      btn.textContent = "Copied!";
+      btn.classList.add("copied");
+      setTimeout(function () { btn.textContent = "Copy code"; btn.classList.remove("copied"); }, 2000);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(code).then(done, done);
+    } else {
+      done();
+    }
+  });
+
+  document.getElementById("continueBtn").addEventListener("click", function () {
+    window.location.href = target;
+  });
 </script>
 </body>
 </html>
