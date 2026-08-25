@@ -75,7 +75,7 @@
     <div class="code" id="codeDisplay">&hellip;</div>
     <button id="copyBtn" type="button">Copy code</button>
     <p>Please write this down or take a screenshot &mdash; you will enter it at the start of each daily entry over the next 7 days. It is not linked to your name.</p>
-    <button id="continueBtn" type="button">I've saved my code &mdash; Continue to the survey</button>
+    <button id="continueBtn" type="button">I've saved my code &mdash; Continue to Day 1</button>
     <noscript><p>Please enable JavaScript, or contact the research team for a direct link.</p></noscript>
   </div>
 
@@ -83,9 +83,12 @@
   // ---------------------------------------------------------------------
   // CONFIGURE THIS BEFORE DEPLOYING:
   // Replace with your real SurveyMonkey Web Link Collector URL for
-  // Survey 1 (Enrollment). This is the ONLY thing that needs editing.
+  // Survey 2 (Daily Trip Entry) -- NOT Survey 1. This page is reached
+  // AFTER Survey 1 (eligibility/consent/background) is already done, via
+  // a link on Survey 1's own Thank You page, so it always hands off into
+  // Survey 2 next. This is the ONLY thing that needs editing.
   // ---------------------------------------------------------------------
-  var SURVEY_1_URL = "https://www.surveymonkey.com/r/ZF9V26Z";
+  var SURVEY_2_URL = "https://www.surveymonkey.com/r/ZF96F86";
 
   // Generates a code that can't collide with the paper stream's "P###"
   // codes (sequential, research-team-assigned) by using a different
@@ -112,8 +115,8 @@
   var code = generateCode();
   document.getElementById("codeDisplay").textContent = code;
 
-  var separator = SURVEY_1_URL.indexOf("?") === -1 ? "?" : "&";
-  var target = SURVEY_1_URL + separator + "code=" + encodeURIComponent(code);
+  var separator = SURVEY_2_URL.indexOf("?") === -1 ? "?" : "&";
+  var target = SURVEY_2_URL + separator + "code=" + encodeURIComponent(code);
 
   document.getElementById("copyBtn").addEventListener("click", function () {
     var btn = this;
