@@ -1,0 +1,1 @@
+# diary-code-redirect
